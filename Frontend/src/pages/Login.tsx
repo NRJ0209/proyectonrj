@@ -1,83 +1,165 @@
-import { Container, Typography, Button, Box } from '@mui/material';
+import { Container, Typography, Button, Box, TextField, Alert, Paper } from '@mui/material';
+import { Lock } from '@mui/icons-material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const navigate = useNavigate();
+
+  // Credenciales para acceder
+  const bduser = 'nayra';
+  const bdpasswd = '1234';
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    
+    // Limpiar alertas anteriores
+    setShowSuccess(false);
+    setShowError(false);
+
+    // Mostrar en consola los datos introducidos
+    console.log('Usuario introducido:', username);
+    console.log('Contraseña introducida:', password);
+
+    // Comprobar si las credenciales son correctas
+    if (username === bduser && password === bdpasswd) {
+      console.log('Credenciales CORRECTAS');
+      setShowSuccess(true);
+      // Navegar a /home después de mostrar el alert brevemente
+      setTimeout(() => {
+        navigate('/home');
+      }, 1000);
+    } else {
+      console.log('Credenciales INCORRECTAS');
+      setShowError(true);
+    }
+  };
+
   return (
     <>
       <header>
         <Typography
           variant="h1"
           color="primary"
-          sx={{ textAlign: 'center', fontSize: '2rem', mt: 3 }}
+          sx={{ 
+            textAlign: 'center', 
+            fontSize: '2rem', 
+            mt: 8,
+            mb: 2,
+            fontWeight: 'bold'
+          }}
         >
-          Página Login de Nayra Ramirez Jorge
+          Sistema de acceso
         </Typography>
       </header>
 
       <main>
-        <Container
+        <Container 
+          component="main" 
+          maxWidth="xs"
           sx={{
-            textAlign: 'left',
-            mt: 4,
-            p: 3,
-            borderRadius: 2,
-            boxShadow: 3,
-            backgroundColor: 'background.paper',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
-           {/* Textos */}
-          <Typography variant="h2" color="secondary" sx={{ fontSize: '1.5rem', mb: 1 }}>
-            Módulo: DAD
-          </Typography>
-
-          <Typography variant="h3" color="error" sx={{ fontSize: '1.3rem', mb: 1 }}>
-            Curso: 2ºA DAM
-          </Typography>
-
-          <Typography variant="subtitle1" color="success.main" sx={{ mb: 1 }}>
-            Profesora: María Concepción Hernández Rodríguez
-          </Typography>
-
-          <Typography variant="body1" color="text.primary" sx={{ mb: 1 }}>
-            Esta es mi actividad UT2A1 - AE2.3 - Estructura del proyecto y Guía de estilos 25_26
-          </Typography>
-
-          <Typography variant="caption" color="warning.main" sx={{ display: 'block', mb: 3 }}>
-            ¡Aviso!
-          </Typography>
-
-          {/* Botones */}
-          <Box
+          <Paper
+            elevation={3}
             sx={{
+              padding: 4,
               display: 'flex',
-              justifyContent: 'center',
-              gap: 2,
-              mt: 2,
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+              borderRadius: 2,
             }}
           >
-            <Button variant="text" color="primary">
-              Botón Text
-            </Button>
+            {/* Icono de candado */}
+            <Box
+              sx={{
+                backgroundColor: 'primary.main',
+                color: 'white',
+                borderRadius: '50%',
+                width: 60,
+                height: 60,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mb: 2
+              }}
+            >
+              <Lock sx={{ fontSize: 30 }} />
+            </Box>
 
-            <Button variant="contained" color="secondary">
-              Botón Contained
-            </Button>
+            {/* Formulario de Login */}
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              sx={{
+                width: '100%',
+                mt: 1,
+              }}
+            >
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Usuario"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Contraseña"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
 
-            <Button variant="outlined" color="error">
-              Botón Outlined
-            </Button>
-          </Box>
+              {/* Alertas de éxito y error */}
+              {showSuccess && (
+                <Alert severity="success" sx={{ mt: 2 }}>
+                  Acceso concedido - Redirigiendo a Home...
+                </Alert>
+              )}
+
+              {showError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  Usuario y/o contraseña incorrectos
+                </Alert>
+              )}
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ 
+                  mt: 3, 
+                  mb: 2,
+                  py: 1.5,
+                  fontSize: '1.1rem'
+                }}
+              >
+                ACCEDER
+              </Button>
+            </Box>
+          </Paper>
         </Container>
       </main>
-
-      <footer>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ textAlign: 'center', mt: 4, mb: 2 }}
-        >
-          Proyecto UT2A1 - Nayra Ramírez Jorge
-        </Typography>
-      </footer>
     </>
   );
 }
