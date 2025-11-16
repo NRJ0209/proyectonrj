@@ -2,6 +2,10 @@ import { Container, Typography, Button, Box, TextField, Alert, Paper } from '@mu
 import { Lock } from '@mui/icons-material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+// Importamos el useDispatch de react-redux
+import { useDispatch } from 'react-redux';
+// Importamos las acciones que están en el fichero authSlice.ts
+import { authActions } from '../store/authSlice';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -9,6 +13,9 @@ function Login() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
+
+  // Justo después de la definición de la función Login() ponemos el hook useDispatch:
+  const dispatch = useDispatch();
 
   // Credenciales para acceder
   const bduser = 'nayra';
@@ -29,6 +36,13 @@ function Login() {
     if (username === bduser && password === bdpasswd) {
       console.log('Credenciales CORRECTAS');
       setShowSuccess(true);
+
+      //aquí pongo el dispatch para cambiar el estado a login en el store del redux
+      dispatch(authActions.login({
+        name: username, //data.user es el nombre de usuario que ha ingresado el usuario
+        rol: 'administrador'
+      }))
+
       // Navegar a /home después de mostrar el alert brevemente
       setTimeout(() => {
         navigate('/home');
