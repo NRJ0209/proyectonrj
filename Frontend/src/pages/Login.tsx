@@ -21,7 +21,7 @@ function Login() {
   const bduser = 'nayra';
   const bdpasswd = '1234';
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     
     // Limpiar alertas anteriores
@@ -32,14 +32,14 @@ function Login() {
     console.log('Usuario introducido:', username);
     console.log('Contraseña introducida:', password);
 
-    // Comprobar si las credenciales son correctas
+    // Validación local (funciona ahora)
     if (username === bduser && password === bdpasswd) {
       console.log('Credenciales CORRECTAS');
       setShowSuccess(true);
 
       //aquí pongo el dispatch para cambiar el estado a login en el store del redux
       dispatch(authActions.login({
-        name: username, //data.user es el nombre de usuario que ha ingresado el usuario
+        name: username,
         rol: 'administrador'
       }))
 
