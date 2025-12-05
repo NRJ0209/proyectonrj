@@ -17,10 +17,6 @@ function Login() {
   // Justo después de la definición de la función Login() ponemos el hook useDispatch:
   const dispatch = useDispatch();
 
-  // Credenciales para acceder
-  const bduser = 'nayra';
-  const bdpasswd = '1234';
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     
@@ -32,23 +28,34 @@ function Login() {
     console.log('Usuario introducido:', username);
     console.log('Contraseña introducida:', password);
 
-    // Validación local (funciona ahora)
-    if (username === bduser && password === bdpasswd) {
-      console.log('Credenciales CORRECTAS');
-      setShowSuccess(true);
+    try {
+      // Consulta al endpoint /login en lugar de validación local
+      const response = await fetch(`http://localhost:3030/login?user=${username}&password=${password}`);
+      
+      const result = await response.json();
+      console.log('Resultado del login:', result);
 
-      //aquí pongo el dispatch para cambiar el estado a login en el store del redux
-      dispatch(authActions.login({
-        name: username,
-        rol: 'administrador'
-      }))
+      // Validación con datos de la base de datos
+      if (result.data && result.data.length > 0) {
+        console.log('Credenciales CORRECTAS');
+        setShowSuccess(true);
 
-      // Navegar a /home después de mostrar el alert brevemente
-      setTimeout(() => {
-        navigate('/home');
-      }, 1000);
-    } else {
-      console.log('Credenciales INCORRECTAS');
+        // Usa datos reales de la base de datos
+        dispatch(authActions.login({
+          name: result.data[0].nombre,  // Nombre real de la BD
+          rol: result.data[0].rol        // Rol real de la BD
+        }))
+
+        // Navegar a /home después de mostrar el alert brevemente
+        setTimeout(() => {
+          navigate('/home');
+        }, 1000);
+      } else {
+        console.log('Credenciales INCORRECTAS');
+        setShowError(true);
+      }
+    } catch (error) {
+      console.error('Error al realizar login:', error);
       setShowError(true);
     }
   };

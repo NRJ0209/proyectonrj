@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  TextField, 
-  Button, 
-  Grid,
-  Alert,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
+import { Box, Typography, Paper, TextField, Button, Grid,Alert,Table,TableBody,TableCell,TableContainer,TableHead,TableRow
 } from '@mui/material';
 // Importar DeleteForeverIcon
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 interface ItemType {
   id?: number;
@@ -37,6 +26,9 @@ const Dashboard: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [tableData, setTableData] = useState<ItemType[]>([]);
+  
+
+  const { userRol } = useSelector((state: RootState) => state.authenticator);
 
   useEffect(() => {
     fetchTableData();
@@ -202,7 +194,10 @@ const Dashboard: React.FC = () => {
                 <TableCell>Marca</TableCell>
                 <TableCell>Tipo</TableCell>
                 <TableCell>Precio</TableCell>
-                <TableCell>Acciones</TableCell>
+                {/* Renderizado condicional para columna Acciones */}
+                {(userRol === 'admin' || userRol === 'administrador') && (
+                  <TableCell>Acciones</TableCell>
+                )}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -213,16 +208,18 @@ const Dashboard: React.FC = () => {
                   <TableCell>{row.marca}</TableCell>
                   <TableCell>{row.tipo}</TableCell>
                   <TableCell>${row.precio}</TableCell>
-                  <TableCell>
-                    {/* Botón con DeleteForeverIcon y texto Eliminar */}
-                    <Button 
-                      color="error" 
-                      onClick={() => handleDeleteItem(row)}
-                      startIcon={<DeleteForeverIcon />}
-                    >
-                      Eliminar
-                    </Button>
-                  </TableCell>
+                  {/* Renderizado condicional para botón Eliminar */}
+                  {(userRol === 'admin' || userRol === 'administrador') && (
+                    <TableCell>
+                      <Button 
+                        color="error" 
+                        onClick={() => handleDeleteItem(row)}
+                        startIcon={<DeleteForeverIcon />}
+                      >
+                        Eliminar
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

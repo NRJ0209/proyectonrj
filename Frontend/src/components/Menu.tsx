@@ -4,14 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { authActions } from '../store/authSlice';
 
-import { AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, 
-  Box, useMediaQuery, useTheme, Divider } from '@mui/material';
+import { AppBar,Toolbar,Typography,IconButton,Drawer,List,ListItem,ListItemButton,ListItemIcon,ListItemText,Box,
+  useMediaQuery,useTheme,Divider,
+} from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import PersonIcon from '@mui/icons-material/Person';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 const MenuComponent: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -49,6 +52,15 @@ const MenuComponent: React.FC = () => {
     setDrawerOpen(false);
   };
 
+  const getUserIcon = () => {
+    if (userRol === 'admin' || userRol === 'administrador') {
+      return <AdminPanelSettingsIcon />;
+    } else if (userRol === 'user') {
+      return <SupervisorAccountIcon />;
+    }
+    return <PersonIcon />;
+  };
+
   // No mostrar menú si no está autenticado
   if (!isAutenticated) {
     return null;
@@ -67,7 +79,11 @@ const MenuComponent: React.FC = () => {
           {userName}
         </Typography>
         <Typography variant="body2">
-          {userRol}
+          {/*Mostrar icono del rol */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {getUserIcon()}
+            {userRol}
+          </Box>
         </Typography>
       </Box>
 
@@ -85,21 +101,24 @@ const MenuComponent: React.FC = () => {
           </Link>
         </ListItem>
 
-        <ListItem disablePadding>
-          <Link to="/reports" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <AssessmentIcon />
-              </ListItemIcon>
-              <ListItemText primary="Informes" />
-            </ListItemButton>
-          </Link>
-        </ListItem>
+        {/* Renderizado condicional para Informes */}
+        {(userRol === 'admin' || userRol === 'administrador') && (
+          <ListItem disablePadding>
+            <Link to="/reports" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
+              <ListItemButton>
+                <ListItemIcon>
+                  <AssessmentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Informes" />
+              </ListItemButton>
+            </Link>
+          </ListItem>
+        )}
       </List>
 
       <Divider />
 
-      {/*Botón de cerrar sesión en el drawer */}
+      {/* Botón de cerrar sesión en el drawer */}
       <List>
         <ListItem disablePadding>
           <ListItemButton onClick={handleLogout}>
@@ -117,7 +136,6 @@ const MenuComponent: React.FC = () => {
     <>
       <AppBar position="static">
         <Toolbar>
-          {/* Botón hamburguesa */}
           <IconButton
             size="large"
             edge="start"
@@ -132,10 +150,17 @@ const MenuComponent: React.FC = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Mi App
           </Typography>
+
+          {/*  Mostrar icono del rol en la barra superior */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {getUserIcon()}
+            <Typography variant="body2">
+              {userName} ({userRol})
+            </Typography>
+          </Box>
         </Toolbar>
       </AppBar>
 
-      {/* Drawer */}
       <Drawer
         anchor="left"
         open={drawerOpen}
