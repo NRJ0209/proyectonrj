@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { authActions } from '../store/authSlice';
 
-import { AppBar,Toolbar,Typography,IconButton,Drawer,List,ListItem,ListItemButton,ListItemIcon,ListItemText,Box,
-  useMediaQuery,useTheme,Divider,
+import {
+  AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
+  Box, useMediaQuery, useTheme, Divider, Tooltip
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
@@ -13,12 +14,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import PersonIcon from '@mui/icons-material/Person';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import HelpIcon from '@mui/icons-material/Help';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 const MenuComponent: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -91,19 +93,20 @@ const MenuComponent: React.FC = () => {
 
       <List>
         <ListItem disablePadding>
-          <Link to="/home" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
-            <ListItemButton>
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary="Inicio" />
-            </ListItemButton>
-          </Link>
+          <Tooltip title="Ir a la página de inicio" arrow placement="bottom">
+            <Link to="/home" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
+              <ListItemButton>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Inicio" />
+              </ListItemButton>
+            </Link>
+          </Tooltip>
         </ListItem>
 
-        {/* Renderizado condicional para Informes */}
-        {(userRol === 'admin' || userRol === 'administrador') && (
-          <ListItem disablePadding>
+        <ListItem disablePadding>
+          <Tooltip title="Ir a la página de informes" arrow placement="bottom">
             <Link to="/reports" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
               <ListItemButton>
                 <ListItemIcon>
@@ -112,8 +115,21 @@ const MenuComponent: React.FC = () => {
                 <ListItemText primary="Informes" />
               </ListItemButton>
             </Link>
-          </ListItem>
-        )}
+          </Tooltip>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <Tooltip title="Abrir el manual de ayuda" arrow placement="bottom">
+            <Link to="/Ramirez_Jorge_Nayra_UT4A1.pdf" target="_blank" style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}>
+              <ListItemButton>
+                <ListItemIcon>
+                  <HelpIcon />
+                </ListItemIcon>
+                <ListItemText primary="Ayuda" />
+              </ListItemButton>
+            </Link>
+          </Tooltip>
+        </ListItem>
       </List>
 
       <Divider />
@@ -121,12 +137,14 @@ const MenuComponent: React.FC = () => {
       {/* Botón de cerrar sesión en el drawer */}
       <List>
         <ListItem disablePadding>
-          <ListItemButton onClick={handleLogout}>
-            <ListItemIcon>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary="Cerrar Sesión" />
-          </ListItemButton>
+          <Tooltip title="Cerrar sesión" arrow placement="bottom">
+            <ListItemButton onClick={handleLogout}>
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Cerrar Sesión" />
+            </ListItemButton>
+          </Tooltip>
         </ListItem>
       </List>
     </Box>
@@ -136,22 +154,25 @@ const MenuComponent: React.FC = () => {
     <>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
+          {/* Botón hamburguesa */}
+          <Tooltip title="Abrir menú de navegación" arrow placement="bottom-end">
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Tooltip>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Mi App
           </Typography>
 
-          {/*  Mostrar icono del rol en la barra superior */}
+          {/* Mostrar icono del rol en la barra superior */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {getUserIcon()}
             <Typography variant="body2">

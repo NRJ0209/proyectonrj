@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, TextField, Button, Grid,Alert,Table,TableBody,TableCell,TableContainer,TableHead,TableRow
+import {
+  Box,
+  Typography,
+  Paper,
+  TextField,
+  Button,
+  Grid,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip
 } from '@mui/material';
 // Importar DeleteForeverIcon
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -54,13 +68,13 @@ const Dashboard: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     setShowSuccess(false);
     setShowError(false);
 
     try {
       const response = await fetch(`http://localhost:3030/addItem?nombre=${item.nombre}&marca=${item.marca}&tipo=${item.tipo}&precio=${item.precio}`);
-      
+
       const result = await response.json();
 
       if (result > 0) {
@@ -80,11 +94,11 @@ const Dashboard: React.FC = () => {
   // Función handleDeleteItem para borrar registros
   const handleDeleteItem = async (row: ItemType) => {
     if (!row.id) return;
-    
+
     try {
       const response = await fetch(`http://localhost:3030/deleteItem?id=${row.id}`);
       const result = await response.json();
-      
+
       if (result > 0) {
         alert('Registro eliminado correctamente');
         fetchTableData();
@@ -104,7 +118,7 @@ const Dashboard: React.FC = () => {
         <Typography variant="h5" component="h2" gutterBottom>
           Formulario para Insertar Datos
         </Typography>
-        
+
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -117,7 +131,7 @@ const Dashboard: React.FC = () => {
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -128,7 +142,7 @@ const Dashboard: React.FC = () => {
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -139,7 +153,7 @@ const Dashboard: React.FC = () => {
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -152,17 +166,21 @@ const Dashboard: React.FC = () => {
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12}>
-              <Button 
-                type="submit" 
-                variant="contained" 
-                color="primary"
-                size="large"
-              >
-                + INSERTAR DATOS
-              </Button>
+              {/* ponemos arrow para que tenga una flecha y placement para colocar el tooltip en la parte superior */}
+              <Tooltip title="Se añadirán los datos a la base de datos" arrow placement="top">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                >
+                  + INSERTAR DATOS
+                </Button>
+              </Tooltip>
             </Grid>
+
           </Grid>
         </form>
 
@@ -184,7 +202,7 @@ const Dashboard: React.FC = () => {
         <Typography variant="h5" component="h2" gutterBottom>
           Tabla de Datos
         </Typography>
-        
+
         <TableContainer>
           <Table aria-label='Tabla de productos'>
             <TableHead>
@@ -211,13 +229,15 @@ const Dashboard: React.FC = () => {
                   {/* Renderizado condicional para botón Eliminar */}
                   {(userRol === 'admin' || userRol === 'administrador') && (
                     <TableCell>
-                      <Button 
-                        color="error" 
-                        onClick={() => handleDeleteItem(row)}
-                        startIcon={<DeleteForeverIcon />}
-                      >
-                        Eliminar
-                      </Button>
+                      <Tooltip title="Se eliminarán los datos definitivamente" arrow placement="right">
+                        <Button
+                          color="error"
+                          onClick={() => handleDeleteItem(row)}
+                          startIcon={<DeleteForeverIcon />}
+                        >
+                          Eliminar
+                        </Button>
+                      </Tooltip>
                     </TableCell>
                   )}
                 </TableRow>
